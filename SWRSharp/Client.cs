@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
@@ -7,68 +6,63 @@ namespace SWRSharp
 {
     public class Client
     {
-        private NetworkStream clientStream;
-        private TcpClient tcpClient;
-        private StringBuilder inBuffer;
-        private String Command;
-        private bool commandPending;
+        private readonly NetworkStream _clientStream;
+        private string _command;
+        private bool _commandPending;
+        private readonly StringBuilder _inBuffer;
+        private readonly TcpClient _tcpClient;
 
         public Client(TcpClient inClient)
         {
-            tcpClient = inClient;
-            clientStream = tcpClient.GetStream();
-            inBuffer = new StringBuilder();
-            commandPending = false;
-
+            _tcpClient = inClient;
+            _clientStream = _tcpClient.GetStream();
+            _inBuffer = new StringBuilder();
+            _commandPending = false;
         }
 
-        public void Send(String msg)
+        public void Send(string msg)
         {
-            if (clientStream.CanWrite)
+            if (_clientStream.CanWrite)
             {
-                byte[] buffer = Encoding.UTF8.GetBytes(msg);
-                clientStream.Write(buffer,0,buffer.Length);
+                var buffer = Encoding.UTF8.GetBytes(msg);
+                _clientStream.Write(buffer, 0, buffer.Length);
             }
         }
 
-        public String GetCommand()
+        public string GetCommand()
         {
-            String ReturnValue = String.Copy(Command);
-            Command = "";
-            commandPending = false;
-            return ReturnValue;
+            var returnValue = string.Copy(_command);
+            _command = "";
+            _commandPending = false;
+            return returnValue;
         }
 
-        public bool isCommandPending()
+        public bool IsCommandPending()
         {
-            return commandPending;
+            return _commandPending;
         }
-        
+
         public bool AttemptRead()
         {
-            
-            if (clientStream.CanRead && tcpClient.Client.Poll(1,SelectMode.SelectRead))
+            if (_clientStream.CanRead && _tcpClient.Client.Poll(1, SelectMode.SelectRead))
             {
-                byte[] ReadBuffer = new byte[1024];
-                int bytesread = 0;
-
+                var readBuffer = new byte[1024];
                 do
                 {
                     try
                     {
-                        if ((bytesread = clientStream.Read(ReadBuffer, 0, ReadBuffer.Length)) != 0)
+                        var bytesread = 0;
+                        if ((bytesread = _clientStream.Read(readBuffer, 0, readBuffer.Length)) != 0)
                         {
-                            inBuffer.AppendFormat("{0}", Encoding.ASCII.GetString(ReadBuffer, 0, bytesread));
-                            if (ReadBuffer[bytesread- 1] == '\r' || ReadBuffer[bytesread - 1] == '\n')
-                            {
-                                if (!commandPending)
+                            _inBuffer.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesread));
+                            if (readBuffer[bytesread - 1] == '\r' || readBuffer[bytesread - 1] == '\n')
+                                if (!_commandPending)
                                 {
-                                    Command = inBuffer.ToString();
-                                    inBuffer.Clear();
-                                    commandPending = true;
+                                    _command = _inBuffer.ToString();
+                                    _inBuffer.Clear();
+                                    _commandPending = true;
                                     return true;
                                 }
-                            }
                         }
                         else
                         {
@@ -79,15 +73,16 @@ namespace SWRSharp
                     {
                         return false;
                     }
-                } while (clientStream.DataAvailable);
+                } while (_clientStream.DataAvailable);
             }
+
             return true;
         }
+
         public void Close()
         {
-            tcpClient.Close();
-            clientStream.Close();
+            _tcpClient.Close();
+            _clientStream.Close();
         }
-        
     }
 }

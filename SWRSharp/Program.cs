@@ -1,35 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Net.Sockets;
 using System.Net;
-using System.IO;
-
+using System.Net.Sockets;
 
 namespace SWRSharp
 {
-    class Program
+    internal class Program
     {
-        
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            List<Client> ClientList = new List<Client>();
-            
+            var ClientList = new List<Client>();
+
             Console.WriteLine("Listening...");
-            TcpListener server = new TcpListener(IPAddress.Any, 4000);
+            var server = new TcpListener(IPAddress.Any, 4000);
             server.Start();
             while (true)
             {
                 if (server.Pending())
                 {
-                    Client connection = new Client( server.AcceptTcpClient());
+                    var connection = new Client(server.AcceptTcpClient());
                     connection.Send("Welcome Message.\r\n");
                     Console.WriteLine("connection accepted.");
                     ClientList.Add(connection);
                 }
 
                 Client client;
-                for (int i = ClientList.Count - 1; i > -1; i--)
+                for (var i = ClientList.Count - 1; i > -1; i--)
                 {
                     client = ClientList[i];
                     if (!client.AttemptRead())
@@ -39,9 +35,9 @@ namespace SWRSharp
                         client.Close();
                     }
 
-                    if (client.isCommandPending())
+                    if (client.IsCommandPending())
                     {
-                        String Command = client.GetCommand();
+                        var Command = client.GetCommand();
 
                         switch (Command)
                         {
@@ -52,12 +48,13 @@ namespace SWRSharp
                                 break;
                             case "Shutdown\r\n":
                                 server.Stop();
-                                for (int x = ClientList.Count - 1; x > -1; x--)
+                                for (var x = ClientList.Count - 1; x > -1; x--)
                                 {
                                     Console.WriteLine("Client Disconnected...");
                                     ClientList.RemoveAt(x);
                                     client.Close();
                                 }
+
                                 Console.WriteLine("Server Stopped");
                                 return;
                             default:

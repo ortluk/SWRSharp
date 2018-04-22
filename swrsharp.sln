@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SWRSharp", "SWRSharp\SWRSharp.csproj", "{A0298908-87C7-434B-9675-3CC0FF28453B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0298908-87C7-434B-9675-3CC0FF28453B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0298908-87C7-434B-9675-3CC0FF28453B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0298908-87C7-434B-9675-3CC0FF28453B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0298908-87C7-434B-9675-3CC0FF28453B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
