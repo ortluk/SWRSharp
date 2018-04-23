@@ -11,7 +11,16 @@ namespace SWRSharp
         private bool _commandPending;
         private readonly StringBuilder _inBuffer;
         private readonly TcpClient _tcpClient;
-
+        public ConnectionState State { get; set; }
+        
+        public enum  ConnectionState
+        {
+            CON_GET_NAME,
+            CON_GET_PASSWORD,
+            CON_CONFIRM_PASSWORD,
+            CON_PLAYING
+        };
+        
         public Client(TcpClient inClient)
         {
             _tcpClient = inClient;

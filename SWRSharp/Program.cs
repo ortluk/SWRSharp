@@ -22,6 +22,8 @@ namespace SWRSharp
                     connection.Send("Welcome Message.\r\n");
                     Console.WriteLine("connection accepted.");
                     ClientList.Add(connection);
+                    connection.Send("What name do you wish to be known by? ");
+                    connection.State = Client.ConnectionState.CON_GET_NAME;
                 }
 
                 Client client;
@@ -38,27 +40,47 @@ namespace SWRSharp
                     if (client.IsCommandPending())
                     {
                         var Command = client.GetCommand();
-
-                        switch (Command)
+                        switch (client.State)
                         {
-                            case "Quit\r\n":
-                                Console.WriteLine("Client Disconnected...");
-                                ClientList.RemoveAt(i);
-                                client.Close();
+                            case Client.ConnectionState.CON_GET_NAME:
+                                client.Send("Hello " + Command);
+                                client.Send("Please enter Password: ");
+                                client.State = Client.ConnectionState.CON_GET_PASSWORD;
                                 break;
-                            case "Shutdown\r\n":
-                                server.Stop();
-                                for (var x = ClientList.Count - 1; x > -1; x--)
+                            case Client.ConnectionState.CON_GET_PASSWORD:
+                                client.Send("Password Accepted\r\n");
+                                client.Send("Enter Command > ");
+                                client.State = Client.ConnectionState.CON_PLAYING;
+                                break;
+                            case Client.ConnectionState.CON_PLAYING:
+                                switch (Command)
                                 {
-                                    Console.WriteLine("Client Disconnected...");
-                                    ClientList.RemoveAt(x);
-                                    client.Close();
-                                }
+                                    case "Quit\r\n":
+                                        Console.WriteLine("Client Disconnected...");
+                                        ClientList.RemoveAt(i);
+                                        client.Close();
+                                        break;
+                                    case "Shutdown\r\n":
+                                        server.Stop();
+                                        for (var x = ClientList.Count - 1; x > -1; x--)
+                                        {
+                                            Console.WriteLine("Client Disconnected...");
+                                            ClientList.RemoveAt(x);
+                                            client.Close();
+                                        }
 
-                                Console.WriteLine("Server Stopped");
-                                return;
+                                        Console.WriteLine("Server Stopped");
+                                        return;
+                                    default:
+                                        client.Send(Command);
+                                        client.Send("Enter Command > ");
+                                        client.State = Client.ConnectionState.CON_PLAYING;
+                                        break;
+                                }
+                                break;
                             default:
-                                client.Send(Command);
+                                Console.WriteLine("Invalid connection state!");
+                                client.State = Client.ConnectionState.CON_PLAYING;
                                 break;
                         }
                     }
