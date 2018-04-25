@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
@@ -12,14 +13,37 @@ namespace SWRSharp
         private readonly StringBuilder _inBuffer;
         private readonly TcpClient _tcpClient;
         public ConnectionState State { get; set; }
+        private static Dictionary<string, string> _colorTable;
+
+        public static void InitializeColors()
+        {
+            _colorTable = new Dictionary<string, string>
+            {
+                {"&n", "\u001b[0m"},
+                {"&r", "\u001b[31m"},
+                {"&g", "\u001b[32m"},
+                {"&y", "\u001b[33m"},
+                {"&b", "\u001b[34m"},
+                {"&m", "\u001b[35m"},
+                {"&c", "\u001b[36m"},
+                {"&w", "\u001b[37m"},
+                {"&R", "\u001b[31;1m"},
+                {"&G", "\u001b[32;1m"},
+                {"&Y", "\u001b[33;1m"},
+                {"&B", "\u001b[34;1m"},
+                {"&M", "\u001b[35;1m"},
+                {"&C", "\u001b[36;1m"},
+                {"&W", "\u001b[37;1m"}
+            };
+        }
         
         public enum  ConnectionState
         {
-            CON_GET_NAME,
-            CON_GET_PASSWORD,
-            CON_CONFIRM_PASSWORD,
-            CON_PLAYING
-        };
+            ConGetName,
+            ConGetPassword,
+            ConConfirmPassword,
+            ConPlaying
+        }
         
         public Client(TcpClient inClient)
         {
@@ -31,11 +55,14 @@ namespace SWRSharp
 
         public void Send(string msg)
         {
-            if (_clientStream.CanWrite)
+            foreach (var colorPair in _colorTable)
             {
-                var buffer = Encoding.UTF8.GetBytes(msg);
-                _clientStream.Write(buffer, 0, buffer.Length);
+                msg = msg.Replace(colorPair.Key, colorPair.Value);
             }
+
+            if (!_clientStream.CanWrite) return;
+            var buffer = Encoding.UTF8.GetBytes(msg);
+            _clientStream.Write(buffer, 0, buffer.Length);
         }
 
         public string GetCommand()
@@ -53,37 +80,33 @@ namespace SWRSharp
 
         public bool AttemptRead()
         {
-            if (_clientStream.CanRead && _tcpClient.Client.Poll(1, SelectMode.SelectRead))
+            if (!_clientStream.CanRead || !_tcpClient.Client.Poll(1, SelectMode.SelectRead)) return true;
+            var readBuffer = new byte[1024];
+            do
             {
-                var readBuffer = new byte[1024];
-                do
+                try
                 {
-                    try
+                    int bytesread;
+                    if ((bytesread = _clientStream.Read(readBuffer, 0, readBuffer.Length)) != 0)
                     {
-                        var bytesread = 0;
-                        if ((bytesread = _clientStream.Read(readBuffer, 0, readBuffer.Length)) != 0)
-                        {
-                            _inBuffer.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesread));
-                            if (readBuffer[bytesread - 1] == '\r' || readBuffer[bytesread - 1] == '\n')
-                                if (!_commandPending)
-                                {
-                                    _command = _inBuffer.ToString();
-                                    _inBuffer.Clear();
-                                    _commandPending = true;
-                                    return true;
-                                }
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        _inBuffer.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesread));
+                        if (readBuffer[bytesread - 1] != '\r' && readBuffer[bytesread - 1] != '\n') continue;
+                        if (_commandPending) continue;
+                        _command = _inBuffer.ToString();
+                        _inBuffer.Clear();
+                        _commandPending = true;
+                        return true;
                     }
-                    catch (IOException e)
+                    else
                     {
                         return false;
                     }
-                } while (_clientStream.DataAvailable);
-            }
+                }
+                catch (IOException)
+                {
+                    return false;
+                }
+            } while (_clientStream.DataAvailable);
 
             return true;
         }

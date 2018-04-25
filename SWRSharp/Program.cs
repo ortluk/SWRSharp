@@ -9,8 +9,9 @@ namespace SWRSharp
     {
         private static void Main(string[] args)
         {
-            var ClientList = new List<Client>();
-
+            var clientList = new List<Client>();
+            Client.InitializeColors();
+            
             Console.WriteLine("Listening...");
             var server = new TcpListener(IPAddress.Any, 4000);
             server.Start();
@@ -19,70 +20,69 @@ namespace SWRSharp
                 if (server.Pending())
                 {
                     var connection = new Client(server.AcceptTcpClient());
-                    connection.Send("Welcome Message.\r\n");
+                    connection.Send("&rWelcome&n Message.\r\n");
                     Console.WriteLine("connection accepted.");
-                    ClientList.Add(connection);
+                    clientList.Add(connection);
                     connection.Send("What name do you wish to be known by? ");
-                    connection.State = Client.ConnectionState.CON_GET_NAME;
+                    connection.State = Client.ConnectionState.ConGetName;
                 }
 
-                Client client;
-                for (var i = ClientList.Count - 1; i > -1; i--)
+                for (var i = clientList.Count - 1; i > -1; i--)
                 {
-                    client = ClientList[i];
+                    var client = clientList[i];
                     if (!client.AttemptRead())
                     {
                         Console.WriteLine("Client Disconnected...");
-                        ClientList.RemoveAt(i);
+                        clientList.RemoveAt(i);
                         client.Close();
                     }
 
-                    if (client.IsCommandPending())
+                    if (!client.IsCommandPending()) continue;
+                    var command = client.GetCommand();
+                    switch (client.State)
                     {
-                        var Command = client.GetCommand();
-                        switch (client.State)
-                        {
-                            case Client.ConnectionState.CON_GET_NAME:
-                                client.Send("Hello " + Command);
-                                client.Send("Please enter Password: ");
-                                client.State = Client.ConnectionState.CON_GET_PASSWORD;
-                                break;
-                            case Client.ConnectionState.CON_GET_PASSWORD:
-                                client.Send("Password Accepted\r\n");
-                                client.Send("Enter Command > ");
-                                client.State = Client.ConnectionState.CON_PLAYING;
-                                break;
-                            case Client.ConnectionState.CON_PLAYING:
-                                switch (Command)
-                                {
-                                    case "Quit\r\n":
+                        case Client.ConnectionState.ConGetName:
+                            client.Send("Hello " + command);
+                            client.Send("Please enter Password: ");
+                            client.State = Client.ConnectionState.ConGetPassword;
+                            break;
+                        case Client.ConnectionState.ConConfirmPassword:
+                            break;
+                        case Client.ConnectionState.ConGetPassword:
+                            client.Send("Password Accepted\r\n");
+                            client.Send("Enter Command > ");
+                            client.State = Client.ConnectionState.ConPlaying;
+                            break;
+                        case Client.ConnectionState.ConPlaying:
+                            switch (command)
+                            {
+                                case "Quit\r\n":
+                                    Console.WriteLine("Client Disconnected...");
+                                    clientList.RemoveAt(i);
+                                    client.Close();
+                                    break;
+                                case "Shutdown\r\n":
+                                    server.Stop();
+                                    for (var x = clientList.Count - 1; x > -1; x--)
+                                    {
                                         Console.WriteLine("Client Disconnected...");
-                                        ClientList.RemoveAt(i);
+                                        clientList.RemoveAt(x);
                                         client.Close();
-                                        break;
-                                    case "Shutdown\r\n":
-                                        server.Stop();
-                                        for (var x = ClientList.Count - 1; x > -1; x--)
-                                        {
-                                            Console.WriteLine("Client Disconnected...");
-                                            ClientList.RemoveAt(x);
-                                            client.Close();
-                                        }
+                                    }
 
-                                        Console.WriteLine("Server Stopped");
-                                        return;
-                                    default:
-                                        client.Send(Command);
-                                        client.Send("Enter Command > ");
-                                        client.State = Client.ConnectionState.CON_PLAYING;
-                                        break;
-                                }
-                                break;
-                            default:
-                                Console.WriteLine("Invalid connection state!");
-                                client.State = Client.ConnectionState.CON_PLAYING;
-                                break;
-                        }
+                                    Console.WriteLine("Server Stopped");
+                                    return;
+                                default:
+                                    client.Send(command);
+                                    client.Send("Enter Command > ");
+                                    client.State = Client.ConnectionState.ConPlaying;
+                                    break;
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("Invalid connection state!");
+                            client.State = Client.ConnectionState.ConPlaying;
+                            break;
                     }
                 }
             }
