@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace SWRSharp
@@ -14,12 +15,24 @@ namespace SWRSharp
         private readonly TcpClient _tcpClient;
         public ConnectionState State { get; set; }
         private static Dictionary<string, string> _colorTable;
+        private Character _character;
 
+        public void set_Character(Character ch)
+        {
+            _character = ch;
+            if (_character != null) _character.set_client(this);
+        }
+
+        public Character get_character()
+        {
+            return _character;
+        }
         public static void InitializeColors()
         {
             _colorTable = new Dictionary<string, string>
             {
                 {"&n", "\u001b[0m"},
+                {"&z", "\u001b[30m"},
                 {"&r", "\u001b[31m"},
                 {"&g", "\u001b[32m"},
                 {"&y", "\u001b[33m"},
@@ -27,6 +40,7 @@ namespace SWRSharp
                 {"&m", "\u001b[35m"},
                 {"&c", "\u001b[36m"},
                 {"&w", "\u001b[37m"},
+                {"&Z", "\u001b[30;1m"},
                 {"&R", "\u001b[31;1m"},
                 {"&G", "\u001b[32;1m"},
                 {"&Y", "\u001b[33;1m"},
@@ -41,6 +55,7 @@ namespace SWRSharp
         {
             ConGetName,
             ConGetPassword,
+            ConGetNewPassword,
             ConConfirmPassword,
             ConPlaying
         }
@@ -95,6 +110,7 @@ namespace SWRSharp
                         _command = _inBuffer.ToString();
                         _inBuffer.Clear();
                         _commandPending = true;
+                        _command = _command.TrimEnd('\r', '\n');
                         return true;
                     }
                     else

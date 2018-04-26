@@ -54,26 +54,63 @@ namespace SWRSharp
                     switch (sock.State)
                     {
                         case Client.ConnectionState.ConGetName:
-                            sock.Send("Hello " + command);
-                            sock.Send("Please enter Password: ");
-                            sock.State = Client.ConnectionState.ConGetPassword;
+                            sock.set_Character(new Character());
+                            if (sock.get_character().load_Character(command))
+                            {
+                                sock.Send("Please enter Password: ");
+                                sock.State = Client.ConnectionState.ConGetPassword;
+                            }
+                            else
+                            {
+                                sock.get_character().set_name(command);
+                                sock.Send("What password will you use? ");
+                                sock.State = Client.ConnectionState.ConGetNewPassword;
+                            }
+                            break;
+                        case Client.ConnectionState.ConGetNewPassword:
+                            sock.get_character().set_password(command);
+                            sock.Send("Retype Password: ");
+                            sock.State = Client.ConnectionState.ConConfirmPassword;
                             break;
                         case Client.ConnectionState.ConConfirmPassword:
+                            if (command == sock.get_character().get_password())
+                            {
+                                sock.get_character().save_Character();
+                                sock.Send("Welcome, " + sock.get_character().get_name() + "!\r\n");
+                                sock.Send("Enter Command > ");
+                                sock.State = Client.ConnectionState.ConPlaying;
+                            }
+                            else
+                            {
+                                sock.Send("Passwords do not match. Enter a new Password: ");
+                                sock.State = Client.ConnectionState.ConGetNewPassword;
+                            }
                             break;
                         case Client.ConnectionState.ConGetPassword:
-                            sock.Send("Password Accepted\r\n");
-                            sock.Send("Enter Command > ");
-                            sock.State = Client.ConnectionState.ConPlaying;
+                            if (command == sock.get_character().get_password())
+                            {
+                                sock.Send("Password Accepted\r\n");
+                                sock.Send("Enter Command > ");
+                                sock.State = Client.ConnectionState.ConPlaying;
+                            }
+                            else
+                            {
+                                sock.Send("Login Failure\r\n");
+                                Console.WriteLine("Login Failure - " + sock.get_character().get_name());
+                                sock.set_Character(null);
+                                sock.Send("Enter Name: ");
+                                sock.State = Client.ConnectionState.ConGetName;
+                            }
                             break;
                         case Client.ConnectionState.ConPlaying:
-                            switch (command)
+                            switch (command.ToLower())
                             {
-                                case "Quit\r\n":
+                                case "quit":
                                     Console.WriteLine("Client Disconnected...");
                                     clientList.RemoveAt(position);
                                     sock.Close();
                                     break;
-                                case "Shutdown\r\n":
+                                case "shutdown":
                                     server.Stop();
                                     for (var x = clientList.Count - 1; x > -1; x--)
                                     {
@@ -85,7 +122,7 @@ namespace SWRSharp
                                     Console.WriteLine("Server Stopped");
                                     return false;
                                 default:
-                                    sock.Send(command);
+                                    sock.Send(command + "\r\n");
                                     sock.Send("Enter Command > ");
                                     sock.State = Client.ConnectionState.ConPlaying;
                                     break;
