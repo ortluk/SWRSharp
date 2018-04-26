@@ -12,7 +12,7 @@ namespace SWRSharp
         private static void Main(string[] args)
         {
             var clientList = new List<Client>();
-            string greeting = System.IO.File.ReadAllText("./config/greeting.txt");
+            var greeting = System.IO.File.ReadAllText("./config/greeting.txt");
             Client.InitializeColors();
             
             Console.WriteLine("Listening...");
