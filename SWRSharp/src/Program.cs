@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SWRSharp
 {
@@ -10,6 +12,7 @@ namespace SWRSharp
         private static void Main(string[] args)
         {
             var clientList = new List<Client>();
+            string greeting = System.IO.File.ReadAllText("./config/greeting.txt");
             Client.InitializeColors();
             
             Console.WriteLine("Listening...");
@@ -20,10 +23,10 @@ namespace SWRSharp
                 if (server.Pending())
                 {
                     var connection = new Client(server.AcceptTcpClient());
-                    connection.Send("&rWelcome&n Message.\r\n");
+                    connection.Send(greeting);
                     Console.WriteLine("connection accepted.");
                     clientList.Add(connection);
-                    connection.Send("What name do you wish to be known by? ");
+                    connection.Send("\r\n\r\nWhat name do you wish to be known by? ");
                     connection.State = Client.ConnectionState.ConGetName;
                 }
 
@@ -37,29 +40,38 @@ namespace SWRSharp
                         client.Close();
                     }
 
-                    if (!client.IsCommandPending()) continue;
-                    var command = client.GetCommand();
-                    switch (client.State)
+                    if (!client.IsCommandPending()) 
+                        continue;
+
+                    if (!nanny(client, client.GetCommand(), i))
+                        return;
+                }
+            }
+
+            bool nanny(Client sock, string line, int position)
+            {
+                    var command = line;
+                    switch (sock.State)
                     {
                         case Client.ConnectionState.ConGetName:
-                            client.Send("Hello " + command);
-                            client.Send("Please enter Password: ");
-                            client.State = Client.ConnectionState.ConGetPassword;
+                            sock.Send("Hello " + command);
+                            sock.Send("Please enter Password: ");
+                            sock.State = Client.ConnectionState.ConGetPassword;
                             break;
                         case Client.ConnectionState.ConConfirmPassword:
                             break;
                         case Client.ConnectionState.ConGetPassword:
-                            client.Send("Password Accepted\r\n");
-                            client.Send("Enter Command > ");
-                            client.State = Client.ConnectionState.ConPlaying;
+                            sock.Send("Password Accepted\r\n");
+                            sock.Send("Enter Command > ");
+                            sock.State = Client.ConnectionState.ConPlaying;
                             break;
                         case Client.ConnectionState.ConPlaying:
                             switch (command)
                             {
                                 case "Quit\r\n":
                                     Console.WriteLine("Client Disconnected...");
-                                    clientList.RemoveAt(i);
-                                    client.Close();
+                                    clientList.RemoveAt(position);
+                                    sock.Close();
                                     break;
                                 case "Shutdown\r\n":
                                     server.Stop();
@@ -67,24 +79,25 @@ namespace SWRSharp
                                     {
                                         Console.WriteLine("Client Disconnected...");
                                         clientList.RemoveAt(x);
-                                        client.Close();
+                                        sock.Close();
                                     }
 
                                     Console.WriteLine("Server Stopped");
-                                    return;
+                                    return false;
                                 default:
-                                    client.Send(command);
-                                    client.Send("Enter Command > ");
-                                    client.State = Client.ConnectionState.ConPlaying;
+                                    sock.Send(command);
+                                    sock.Send("Enter Command > ");
+                                    sock.State = Client.ConnectionState.ConPlaying;
                                     break;
                             }
                             break;
                         default:
                             Console.WriteLine("Invalid connection state!");
-                            client.State = Client.ConnectionState.ConPlaying;
+                            sock.State = Client.ConnectionState.ConPlaying;
                             break;
                     }
-                }
+
+                return true;
             }
         }
     }
