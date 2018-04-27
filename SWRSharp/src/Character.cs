@@ -18,9 +18,9 @@ namespace SWRSharp
         {
             return _client;
         }
-        public void set_name(string Name)
+        public void set_name(string name)
         {
-            _name = Name;
+            _name = name;
         }
 
         public string get_name()
