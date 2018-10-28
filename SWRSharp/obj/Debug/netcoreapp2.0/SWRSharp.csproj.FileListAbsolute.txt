@@ -1,0 +1,11 @@
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.deps.json
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.runtimeconfig.json
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.runtimeconfig.dev.json
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.dll
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.pdb
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.csprojAssemblyReference.cache
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.csproj.CoreCompileInputs.cache
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.AssemblyInfoInputs.cache
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.AssemblyInfo.cs
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.dll
+C:\Users\kryst\Documents\GitHub\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.pdb

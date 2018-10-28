@@ -1,2 +1,3 @@
+look do_look 0
 quit do_quit 0
 shutdown do_shutdown 1

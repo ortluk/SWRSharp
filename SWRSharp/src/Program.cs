@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
@@ -9,14 +10,32 @@ namespace SWRSharp
 {
     class Globals
     {
+        public static Dictionary<string, Area> AreaList;
         public static List<Client> clientList;
         public static TcpListener server;
         public static bool MudDown;
         public static void Initialize()
         {
+            AreaList = new Dictionary<string, Area>();
             clientList = new List<Client>();
             server = new TcpListener(IPAddress.Any, 4000);
             MudDown = false;
+        }
+
+        public static void BootDB()
+        {
+            var fname = "./World/Area.lst";
+            string[] areafiles = File.ReadAllLines(fname);
+
+            foreach (string s in areafiles)
+            {
+                string afname = "./World/" + s;
+                Area newarea = new Area();
+                newarea.set_filename(afname);
+                newarea.Load();
+                AreaList.Add(newarea.get_name(), newarea);
+            }
+
         }
     }
      
@@ -29,6 +48,7 @@ namespace SWRSharp
             Client.InitializeColors();
             Command_Interpreter.Initialize();
             Globals.Initialize();
+            Globals.BootDB();
             Console.WriteLine("Listening...");
             Globals.server.Start();
             while (true)
@@ -102,7 +122,11 @@ namespace SWRSharp
                         case Client.ConnectionState.ConGetPassword:
                             if (command == sock.get_character().get_password())
                             {
+                                Area toarea;
+                                
+                                Globals.AreaList.TryGetValue("Limbo", out toarea);
                                 sock.Send("Password Accepted\r\n");
+                                sock.get_character().to_room(toarea.Get_Room(0));
                                 sock.Send("Enter Command > ");
                                 sock.State = Client.ConnectionState.ConPlaying;
                             }

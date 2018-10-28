@@ -54,12 +54,23 @@ namespace SWRSharp
         {
             DictionaryofFunctions = new Dictionary<string, Action<string, Character>>
             {
+                {"do_look", do_look},
                 {"do_quit", do_quit}, 
                 {"do_shutdown", do_shutdown}
             };
         }
         public Action<string, Character> Invoke;
 
+        private static void do_look(string commandline, Character ch)
+        {
+            Room inroom;
+            string buffer;
+            inroom = ch.get_room();
+            buffer = inroom.Get_Name() + "\r\n";
+            buffer += inroom.Get_Description() + "\r\n";
+            buffer += inroom.List_Occupants() + "\r\n";
+            ch.Send(buffer);
+        }
         private static void do_shutdown(string commandline, Character ch)
         {
             Globals.server.Stop();

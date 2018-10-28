@@ -8,7 +8,20 @@ namespace SWRSharp
         private string _name;
         private string _password;
         private Client _client;
+        private Area inArea;
+        private Room inRoom;
 
+        public void to_room(Room nroom)
+        {
+            inRoom = nroom;
+            nroom.char_to_room(this);
+        }
+
+        public void set_inArea(Area ar)
+        {
+            inArea = ar;
+        }
+        
         public void set_client(Client sock)
         {
             _client = sock;
@@ -23,6 +36,15 @@ namespace SWRSharp
             _name = name;
         }
 
+        public Area get_area()
+        {
+            return inArea;
+        }
+
+        public Room get_room()
+        {
+            return inRoom;
+        }
         public string get_name()
         {
             return _name;
@@ -65,6 +87,11 @@ namespace SWRSharp
             fstream.WriteLine(_name);
             fstream.WriteLine(_password);
             fstream.Close();
+        }
+
+        public void Send(string message)
+        {
+            _client.Send(message);
         }
     }
 }
