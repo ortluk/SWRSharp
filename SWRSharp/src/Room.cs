@@ -67,7 +67,7 @@ namespace SWRSharp
                         endofblock = true;
                         break;
                     default:
-                        description += line;
+                        description += line + "\r\n";
                         break;
                 }                
             }
