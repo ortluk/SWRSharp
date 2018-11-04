@@ -1,10 +1,10 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "C:\\Users\\kryst\\Documents\\GitHub\\SWRSharp\\SWRSharp\\SWRSharp.csproj",
+    "projectUniqueName": "C:\\Users\\Ortluk\\RiderProjects\\SWRSharp\\SWRSharp\\SWRSharp.csproj",
     "projectName": "SWRSharp",
-    "projectPath": "C:\\Users\\kryst\\Documents\\GitHub\\SWRSharp\\SWRSharp\\SWRSharp.csproj",
-    "outputPath": "C:\\Users\\kryst\\Documents\\GitHub\\SWRSharp\\SWRSharp\\obj\\",
+    "projectPath": "C:\\Users\\Ortluk\\RiderProjects\\SWRSharp\\SWRSharp\\SWRSharp.csproj",
+    "outputPath": "C:\\Users\\Ortluk\\RiderProjects\\SWRSharp\\SWRSharp\\obj\\",
     "projectStyle": "PackageReference",
     "fallbackFolders": [
       "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

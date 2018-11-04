@@ -19,3 +19,14 @@ C:/Users/kryst/Documents/GitHub/SWRSharp/SWRSharp/obj/Debug/netcoreapp2.0/SWRSha
 /home/ortluk/RiderProjects/SWRSharp/SWRSharp/obj/Debug/netcoreapp2.0/SWRSharp.AssemblyInfo.cs
 /home/ortluk/RiderProjects/SWRSharp/SWRSharp/obj/Debug/netcoreapp2.0/SWRSharp.dll
 /home/ortluk/RiderProjects/SWRSharp/SWRSharp/obj/Debug/netcoreapp2.0/SWRSharp.pdb
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.deps.json
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.runtimeconfig.json
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.runtimeconfig.dev.json
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.dll
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\bin\Debug\netcoreapp2.0\SWRSharp.pdb
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.csprojAssemblyReference.cache
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.csproj.CoreCompileInputs.cache
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.AssemblyInfoInputs.cache
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.AssemblyInfo.cs
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.dll
+C:\Users\Ortluk\RiderProjects\SWRSharp\SWRSharp\obj\Debug\netcoreapp2.0\SWRSharp.pdb

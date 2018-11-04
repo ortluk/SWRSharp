@@ -10,7 +10,12 @@ namespace SWRSharp
         private string name;
         private string description;
         private Dictionary<string, Character> Occupants;
+        private Dictionary<string, Exit> Exits;
 
+        public Dictionary<string, Exit> Get_Exits()
+        {
+            return Exits;
+        }
         public void char_to_room(Character ch)
         {
             Occupants.Add(ch.get_name(), ch);
@@ -52,6 +57,17 @@ namespace SWRSharp
 
             return buffer;
         }
+
+        public string List_Exits()
+        {
+            string buffer = "Exits:\r\n";
+            foreach (var xit in Exits.Values)
+            {
+                buffer += xit.Get_Names() + "-" + xit.Get_to_room().Get_Name() + "\r\n";
+            }
+
+            return buffer;
+        }
         public void Load_Room(StreamReader sr)
         {
             string line = sr.ReadLine();
@@ -71,6 +87,26 @@ namespace SWRSharp
                         break;
                 }                
             }
+
+            line = sr.ReadLine();
+            switch (line)
+            {
+                    case "EXIT":
+                        if (Exits == null)
+                          Exits = new Dictionary<string, Exit>();    
+                        Exit newexit = new Exit();
+                        newexit.Load_Exit(sr);
+                        string[] names = newexit.Get_Names().Split();
+                        foreach (string s in names)
+                        {
+                            Exits.Add(s, newexit);
+                        }
+
+                        break;
+                    
+                    case "End":
+                        break;
+            }
             Occupants = new Dictionary<string, Character>();
         }
 
@@ -80,6 +116,12 @@ namespace SWRSharp
             sw.WriteLine(name);
             sw.Write(description.ToCharArray(),0,description.Length);
             sw.WriteLine("~");
+            foreach (var xit in Exits)
+            {
+                sw.WriteLine("EXIT");
+                xit.Value.Write_Exit(sw);
+            }
+            sw.WriteLine("End");
         }
     }
 }

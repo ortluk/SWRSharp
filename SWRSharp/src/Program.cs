@@ -36,6 +36,22 @@ namespace SWRSharp
                 AreaList.Add(newarea.get_name(), newarea);
             }
 
+            foreach (var ar in AreaList)
+            {
+                Dictionary <int,Room> Rlist = ar.Value.Get_RoomList();
+                foreach (var rm in Rlist)
+                {
+                    Dictionary<string, Exit> xlist = rm.Value.Get_Exits();
+                    foreach (var xit in xlist)
+                    {
+                        if (xit.Value.Get_to_room() == null)
+                        {
+                            xit.Value.Connect_Exit();
+                        }
+                    }
+                }
+            }
+
         }
     }
      
@@ -108,6 +124,12 @@ namespace SWRSharp
                         case Client.ConnectionState.ConConfirmPassword:
                             if (command == sock.get_character().get_password())
                             {
+                                Area toarea;
+                                
+                                Globals.AreaList.TryGetValue("Limbo", out toarea);
+                                sock.Send("Password Accepted\r\n");
+                                sock.get_character().to_room(toarea.Get_Room(0));
+                                Command_Interpreter.Interpret("look", sock.get_character());
                                 sock.get_character().save_Character();
                                 sock.Send("Welcome, " + sock.get_character().get_name() + "!\r\n");
                                 sock.Send("Enter Command > ");
@@ -127,6 +149,7 @@ namespace SWRSharp
                                 Globals.AreaList.TryGetValue("Limbo", out toarea);
                                 sock.Send("Password Accepted\r\n");
                                 sock.get_character().to_room(toarea.Get_Room(0));
+                                Command_Interpreter.Interpret("look", sock.get_character());
                                 sock.Send("Enter Command > ");
                                 sock.State = Client.ConnectionState.ConPlaying;
                             }

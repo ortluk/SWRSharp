@@ -36,6 +36,11 @@ namespace SWRSharp
             RoomList.TryGetValue(vnum, out temproom);
             return temproom;
         }
+
+        public Dictionary<int, Room> Get_RoomList()
+        {
+            return RoomList;
+        }
         public void Load()
         {
             RoomList = new Dictionary<int, Room>();
@@ -57,8 +62,10 @@ namespace SWRSharp
                             newroom.Load_Room(sr);
                             RoomList.Add(newroom.Get_Vnum(), newroom);
                             break;
+                        case "End":
+                            break;
                         default:
-                            Console.WriteLine("Invalid section in Area File: {0}", filename);
+                            Console.WriteLine("Invalid section {0} in Area File: {1}", words[0], filename);
                             break;
                     }
                 }

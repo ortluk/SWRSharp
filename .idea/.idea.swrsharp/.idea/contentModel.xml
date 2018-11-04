@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\kryst\.Rider2018.2\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\kryst\.Rider2018.2\system\resharper-host\local\Transient\ReSharperHost\v182\SolutionCaches\_swrsharp.-1459283811.00" t="ExcludeRecursive" />
-    <e p="C:\Users\kryst\Documents\GitHub\SWRSharp" t="IncludeFlat">
+    <e p="C:\Users\Ortluk\.Rider2018.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Ortluk\.Rider2018.2\system\resharper-host\local\Transient\ReSharperHost\v182\SolutionCaches\_swrsharp.-1873456970.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Ortluk\RiderProjects\SWRSharp" t="IncludeFlat">
       <e p="packages" t="ExcludeRecursive" />
       <e p="SWRSharp" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
@@ -19,6 +19,7 @@
           </e>
         </e>
         <e p="player" t="Include">
+          <e p="Ortluk" t="Include" />
           <e p="testchar" t="Include" />
         </e>
         <e p="readme.md" t="Include" />
@@ -28,6 +29,7 @@
           <e p="Client.cs" t="Include" />
           <e p="Command.cs" t="Include" />
           <e p="Command_Interpreter.cs" t="Include" />
+          <e p="Exit.cs" t="Include" />
           <e p="Program.cs" t="Include" />
           <e p="Room.cs" t="Include" />
         </e>

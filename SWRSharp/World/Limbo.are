@@ -1,8 +1,25 @@
 AREA Limbo
 ROOM
 0
-Floating in the Void
+Floating in the Void - 0
 All around you is a whole lot of nothing
 You really shouldn't be here, maybe there's
-a problem with the rest of the world
+a problem with the rest of the world.
 ~
+EXIT
+South
+Limbo
+1
+End
+ROOM
+1
+Floating in the Void - 1
+All around you is a whole lot of nothing
+You really shouldn't be here, maybe there's
+a problem with the rest of the world.
+~
+EXIT
+North
+Limbo
+0
+End

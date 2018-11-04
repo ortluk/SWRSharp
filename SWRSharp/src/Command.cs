@@ -68,6 +68,7 @@ namespace SWRSharp
             inroom = ch.get_room();
             buffer = inroom.Get_Name() + "\r\n";
             buffer += inroom.Get_Description() + "\r\n";
+            buffer += inroom.List_Exits() + "\r\n";
             buffer += inroom.List_Occupants() + "\r\n";
             ch.Send(buffer);
         }
