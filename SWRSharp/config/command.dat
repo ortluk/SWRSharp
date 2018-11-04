@@ -1,3 +1,17 @@
+north do_move 0
+south do_move 0
+east do_move 0
+west do_move 0
+northeast do_move 0
+northwest do_move 0
+southeast do_move 0
+southwest do_move 0
+up do_move 0
+down do_move 0
+ne do_move 0
+nw do_move 0
+se do_move 0
+sw do_move 0
 look do_look 0
 quit do_quit 0
 shutdown do_shutdown 1

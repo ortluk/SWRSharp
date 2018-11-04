@@ -16,6 +16,20 @@ namespace SWRSharp
         {
             return Exits;
         }
+
+        public Exit Get_Exit(string exname)
+        {
+            Exit xit;
+            if (!Exits.TryGetValue(exname, out xit))
+            {
+                return null;
+            }
+            else
+            {
+                return xit;
+            }
+
+        }
         public void char_to_room(Character ch)
         {
             Occupants.Add(ch.get_name(), ch);
@@ -99,7 +113,7 @@ namespace SWRSharp
                         string[] names = newexit.Get_Names().Split();
                         foreach (string s in names)
                         {
-                            Exits.Add(s, newexit);
+                            Exits.Add(s.ToLower(), newexit);
                         }
 
                         break;

@@ -54,6 +54,7 @@ namespace SWRSharp
         {
             DictionaryofFunctions = new Dictionary<string, Action<string, Character>>
             {
+                {"do_move", do_move},
                 {"do_look", do_look},
                 {"do_quit", do_quit}, 
                 {"do_shutdown", do_shutdown}
@@ -61,6 +62,71 @@ namespace SWRSharp
         }
         public Action<string, Character> Invoke;
 
+        private static void do_move(string commandline, Character ch)
+        {
+            string[] args = commandline.Split();
+            Exit xit;
+            Room inroom = ch.get_room();
+            switch (args[0].ToLower())
+            {
+                case "north":
+                case "n":
+                    xit = inroom.Get_Exit("north");
+                    break;
+                
+                case "south":
+                case "s":
+                    xit = inroom.Get_Exit("south");
+                    break;
+                case "east":
+                case "e":
+                    xit = inroom.Get_Exit("east");
+                    break;
+                case "west":
+                case "w":
+                    xit = inroom.Get_Exit("west");
+                    break;
+                case "northeast":
+                case "ne":
+                    xit = inroom.Get_Exit("northeast");
+                    break;
+                case "northwest":
+                case "nw":
+                    xit = inroom.Get_Exit("northwest");
+                    break;
+                case "southeast":
+                case "se":
+                    xit = inroom.Get_Exit("southeast");
+                    break;
+                case "southwest":
+                case "sw":
+                    xit = inroom.Get_Exit("southwest");
+                    break;
+                case "up":
+                case "u":
+                    xit = inroom.Get_Exit("up");
+                    break;
+                case "down":
+                case "d":
+                    xit = inroom.Get_Exit("down");
+                    break;
+                default:
+                    xit = inroom.Get_Exit(args[0]);
+                    if (xit == null)
+                    {
+                        ch.Send("Huh?!?\r\n");
+                        return;
+                    }
+                    break;
+            }
+
+            if (xit == null)
+            {
+                ch.Send("Alas, you cannot go that way. \r\n");
+                return;
+            }
+            ch.to_room(xit.Get_to_room());
+        }
         private static void do_look(string commandline, Character ch)
         {
             Room inroom;
@@ -74,6 +140,12 @@ namespace SWRSharp
         }
         private static void do_shutdown(string commandline, Character ch)
         {
+            string[] args = commandline.Split();
+            if (args[0].ToLower() != "shutdown")
+            {
+                ch.Send("&RUse shutdown to shutdown mud\r\n&n");
+                return;
+            }
             Globals.server.Stop();
             for (var x = Globals.clientList.Count - 1; x > -1; x--)
             {

@@ -13,8 +13,13 @@ namespace SWRSharp
 
         public void to_room(Room nroom)
         {
+            if (inRoom != null)
+            {
+                inRoom.char_from_room(this);
+            }
             inRoom = nroom;
             nroom.char_to_room(this);
+            Command_Interpreter.Interpret("look", this);
         }
 
         public void set_inArea(Area ar)
